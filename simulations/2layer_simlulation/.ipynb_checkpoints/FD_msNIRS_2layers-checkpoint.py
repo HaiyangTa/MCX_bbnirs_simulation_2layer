@@ -21,8 +21,7 @@ distance_default =  [15, 20, 25, 30]
 # return mu_a, mu_s in mm-1. 
 def compute_ua_us(hbo, hhb, coef_path, a = a_default, b = b_default, lambdas = lambdas_default, g = g_default):
     C_true = np.array([hbo, hhb]) / 1e6
-    #extinction_coeffs = pd.read_excel(coef_path)
-    extinction_coeffs = coef_path
+    extinction_coeffs = pd.read_excel(coef_path)
     extinction_coeffs_filtered = extinction_coeffs[extinction_coeffs['Lambda'].isin(lambdas)]
     E3 = extinction_coeffs_filtered[['HbO2', 'Hb']].values
     E3 = E3 * math.log(10)
