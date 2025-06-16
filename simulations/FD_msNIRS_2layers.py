@@ -2,6 +2,8 @@ import pmcx
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 import pickle
+import pandas as pd
+import math
 
 # speed of light: 
 n = 1.370
@@ -129,7 +131,7 @@ def mcx_sim_2layers(hbo1, hhb1, hbo2, hhb2, l1, coef_path, a = a_default, b = b_
     distance_data = {d: [] for d in distance}
     mu_a_1, mu_s_1, mu_a_2, mu_s_2  = get_2layer_properties(hbo1, hhb1, hbo2, hhb2, coef_path, a, b, lambdas, g)
     for sim_idx, (ua1, us1, ua2, us2) in enumerate(zip(mu_a_1, mu_s_1, mu_a_2, mu_s_2)): # 8 wl
-        intensity_d_list, unit = mcx_simulation(ua1, us1, ua2, us2, l1, g, n, distance, tend, devf, nphoton, source_type)
+        TPSF_list, unit = mcx_simulation(ua1, us1, ua2, us2, l1, g, n, distance, tend, devf, nphoton, source_type)
         [[x[0] * nphoton * tend ] for x in TPSF_list] # weight/mm2
         for i, d in enumerate(distance): # 4 distances
             distance_data[d].append(TPSF_list[i][0])
