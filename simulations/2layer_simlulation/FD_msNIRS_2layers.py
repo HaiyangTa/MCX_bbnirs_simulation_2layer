@@ -82,7 +82,7 @@ def run_mcx(ua1, us1, ua2, us2, l1, g = g_default, n = n_default, distances = di
     cfg['issavedet']=1
     cfg['issrcfrom0']=1
     cfg['maxdetphoton']=nphoton
-    #cfg['seed']= 999
+    cfg['seed']= 1
 
     # define source type: 
     if source_type == 'iso': 
