@@ -10,11 +10,11 @@ n = 1.370
 c = 2.998e+10
 c = c / n # cm/s
 
-# default values: 
+# default values:
 a1_default = 22
 b1_default = 1.2
 a2_default = 22
-b1_default = 1.2
+b2_default = 1.2
 #
 lambdas_default = [784, 800, 818, 835, 851, 868, 881, 894]
 g_default = 0.85
@@ -28,7 +28,8 @@ def compute_ua_us(hbo, hhb, coef_path, a, b, lambdas, g):
     extinction_coeffs_filtered = extinction_coeffs[extinction_coeffs['Lambda'].isin(lambdas)]
     E3 = extinction_coeffs_filtered[['HbO2', 'Hb']].values
     E3 = E3 * math.log(10)
-    mu_a = np.dot(C_true, E3.T)
+    mu_a = np.dot(C_true.T, E3.T)
+    #print(mu_a.shape)
     mu_s_prime = np.array([a * (wavelength / 500) ** (-b) for wavelength in lambdas]) / (1 - g)
     return mu_a/10, mu_s_prime/10 # mm-1
 
@@ -39,9 +40,9 @@ def get_2layer_properties(hbo1, hhb1, hbo2, hhb2, coef_path, a1 = a1_default, b1
     mu_a_2, mu_s_2 = compute_ua_us(hbo2, hhb2, coef_path, a2, b2, lambdas, g)
     return mu_a_1, mu_s_1, mu_a_2, mu_s_2 
 
-def run_mcx(ua1, us1, ua2, us2, l1, g = g_default, n = n_default, distances = distance_default, tend =1e-08, devf = 10000, nphoton = 1e8, source_type='laser'):
+def run_mcx(ua1, us1, ua2, us2, l1, g = g_default, n = n_default, distances = distance_default, tend =1e-08, devf = 1000, nphoton = 1e8, source_type='laser'):
     
-    # define structure properties
+    l1 = int(l1)
     prop = np.array([
         [0.0, 0.0, 1.0, 1.0], # air
         [ua1, us1, g, n], # first layer
@@ -62,7 +63,8 @@ def run_mcx(ua1, us1, ua2, us2, l1, g = g_default, n = n_default, distances = di
     vol[:, 0, :] = 0
     vol[:, 99, :] = 0
     
-    detpos = [[50 + d, 50, 1, 2] for d in distances]
+    # 
+    detpos = [[50+d, 50, 1, 2] for d in distances] # [x, y ,z, r]
     
     cfg = {
           'nphoton': nphoton,
@@ -84,7 +86,7 @@ def run_mcx(ua1, us1, ua2, us2, l1, g = g_default, n = n_default, distances = di
     cfg['issavedet']=1
     cfg['issrcfrom0']=1
     cfg['maxdetphoton']=nphoton
-    cfg['seed']= 1
+    cfg['seed']= 999
 
     # define source type: 
     if source_type == 'iso': 
@@ -134,7 +136,7 @@ def mcx_sim_2layers(hbo1, hhb1, hbo2, hhb2, l1, coef_path, a1 = a1_default, b1 =
     distance_data = {d: [] for d in distance}
     mu_a_1, mu_s_1, mu_a_2, mu_s_2  = get_2layer_properties(hbo1, hhb1, hbo2, hhb2, coef_path, a1, b1, a2, b2, lambdas, g)
     for sim_idx, (ua1, us1, ua2, us2) in enumerate(zip(mu_a_1, mu_s_1, mu_a_2, mu_s_2)): # 8 wl
-        TPSF_list, unit = mcx_simulation(ua1, us1, ua2, us2, l1, g, n, distannce, tend, devf, nphoton, source_type)
+        TPSF_list, unit = mcx_simulation(ua1, us1, ua2, us2, l1, g, n, distance, tend, devf, nphoton, source_type)
         #[[x[0] * nphoton * tend ] for x in TPSF_list] # weight/mm2
         for i, d in enumerate(distance): # 4 distances
             distance_data[d].append(TPSF_list[i])
