@@ -6,7 +6,7 @@ import pandas as pd
 import math
 
 # speed of light: 
-n = 1.370
+n = 1.4
 c = 2.998e+10
 c = c / n # cm/s
 
@@ -17,8 +17,8 @@ a2_default = 22
 b2_default = 1.2
 #
 lambdas_default = [784, 800, 818, 835, 851, 868, 881, 894]
-g_default = 0.85
-n_default = 1.370
+g_default = 0.9
+n_default = 1.4
 distance_default =  [15, 20, 25, 30]
 
 # return mu_a, mu_s in mm-1. 
@@ -76,7 +76,7 @@ def run_mcx(ua1, us1, ua2, us2, l1, g = g_default, n = n_default, distances = di
           'srcdir': [0, 0, 1],  # Pointing toward z=1
           'prop': prop,
           'detpos': detpos, 
-          'savedetflag': 'dpxsvmw',  # Save detector ID, exit position, exit direction, partial path lengths
+          'savedetflag': 'p',  # Save detector ID, exit position, exit direction, partial path lengths
           'unitinmm': 1,
           'autopilot': 1,
           'debuglevel': 'DP',
