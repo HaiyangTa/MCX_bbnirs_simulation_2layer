@@ -30,8 +30,8 @@ def compute_ua_us(hbo, hhb, coef_path, a, b, lambdas, g):
     E3 = E3 * math.log(10)
     mu_a = np.dot(C_true.T, E3.T)
     #print(mu_a.shape)
-    mu_s_prime = np.array([a * (wavelength / 500) ** (-b) for wavelength in lambdas]) / (1 - g)
-    return mu_a/10, mu_s_prime/10 # mm-1
+    mu_s = np.array([a * (wavelength / 500) ** (-b) for wavelength in lambdas]) / (1 - g)
+    return mu_a/10, mu_s/10 # mm-1
 
 
 # get 2 layers' properties. 
