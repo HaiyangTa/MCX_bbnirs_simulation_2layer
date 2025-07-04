@@ -19,7 +19,7 @@ b2_default = 1.2
 lambdas_default = [784, 800, 818, 835, 851, 868, 881, 894]
 g_default = 0.9
 n_default = 1.4
-distance_default =  [15, 20, 25, 30]
+distance_default =  [10, 15, 20, 25, 30, 35, 40, 45]
 
 # return mu_a, mu_s in mm-1. 
 def compute_ua_us(hbo, hhb, coef_path, a, b, lambdas, g):
@@ -30,8 +30,8 @@ def compute_ua_us(hbo, hhb, coef_path, a, b, lambdas, g):
     E3 = E3 * math.log(10)
     mu_a = np.dot(C_true.T, E3.T)
     #print(mu_a.shape)
-    mu_s_prime = np.array([a * (wavelength / 500) ** (-b) for wavelength in lambdas]) / (1 - g)
-    return mu_a/10, mu_s_prime/10 # mm-1
+    mu_s = np.array([a * (wavelength / 500) ** (-b) for wavelength in lambdas]) / (1 - g)
+    return mu_a/10, mu_s/10 # mm-1
 
 
 # get 2 layers' properties. 
@@ -64,7 +64,7 @@ def run_mcx(ua1, us1, ua2, us2, l1, g = g_default, n = n_default, distances = di
     vol[:, 99, :] = 0
     
     # 
-    detpos = [[50+d, 50, 1, 2] for d in distances] # [x, y ,z, r]
+    detpos = [[50+d, 50, 1, 2] for d in distances]
     
     cfg = {
           'nphoton': nphoton,
@@ -76,7 +76,7 @@ def run_mcx(ua1, us1, ua2, us2, l1, g = g_default, n = n_default, distances = di
           'srcdir': [0, 0, 1],  # Pointing toward z=1
           'prop': prop,
           'detpos': detpos, 
-          'savedetflag': 'p',  # Save detector ID, exit position, exit direction, partial path lengths
+          'savedetflag': 'p',
           'unitinmm': 1,
           'autopilot': 1,
           'debuglevel': 'DP',
@@ -138,7 +138,7 @@ def mcx_sim_2layers(hbo1, hhb1, hbo2, hhb2, l1, coef_path, a1 = a1_default, b1 =
     for sim_idx, (ua1, us1, ua2, us2) in enumerate(zip(mu_a_1, mu_s_1, mu_a_2, mu_s_2)): # 8 wl
         TPSF_list, unit = mcx_simulation(ua1, us1, ua2, us2, l1, g, n, distance, tend, devf, nphoton, source_type)
         #[[x[0] * nphoton * tend ] for x in TPSF_list] # weight/mm2
-        for i, d in enumerate(distance): # 4 distances
+        for i, d in enumerate(distance): # 8 distances
             distance_data[d].append(TPSF_list[i])
     return distance_data
 
