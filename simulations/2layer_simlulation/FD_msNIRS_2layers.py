@@ -13,7 +13,9 @@ b1_default = 1.2
 a2_default = 22
 b2_default = 1.2
 #
-lambdas_default = [784, 800, 818, 835, 851, 868, 881, 894]
+#lambdas_default = [784, 800, 818, 835, 851, 868, 881, 894]
+
+lambdas_default = [784, 835]
 g_default = 0.9
 n_default = 1.4
 distance_default =  [10, 15, 20, 25, 30, 35, 40, 45]
