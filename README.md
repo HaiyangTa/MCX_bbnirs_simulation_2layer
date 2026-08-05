@@ -1,2 +1,2 @@
-# MCX_bbnirs_simulation_2layer
+# ML_in_hemoglobin_concentration_prediction_2layer
 2-layer MCX simulations
